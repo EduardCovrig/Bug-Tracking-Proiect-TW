@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id_user   String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdProjects Project[] @relation("CreatedProjects")
+  reportedBugs    Bug[]     @relation("ReportedBugs")
+  assignedBugs    Bug[]     @relation("AssignedBugs")
+  projectMemberships ProjectMember[]
+}
+
+model Project {
+  id_project String   @id @default(uuid())
+  name       String
+  description String?
+  repository String
+  created_by String
+  created_at DateTime @default(now())
+
+  createdBy User @relation("CreatedProjects", fields: [created_by], references: [id_user])
+  bugs      Bug[]
+  members   ProjectMember[]
+}
+
+model Bug {
+  id_bug        String   @id @default(uuid())
+  id_project    String
+  reported_by   String
+  assigned_to   String?
+  severity      Severity
+  priority      Priority
+  description   String
+  commit_link   String
+  resolved_commit String?
+  status        Status   @default(open)
+  reported_at   DateTime @default(now())
+
+  project     Project @relation(fields: [id_project], references: [id_project], onDelete: Cascade)
+  reporter    User    @relation("ReportedBugs", fields: [reported_by], references: [id_user], onDelete: SetNull)
+  assignee    User?   @relation("AssignedBugs", fields: [assigned_to], references: [id_user], onDelete: SetNull)
+}
+
+model ProjectMember {
+  id_user   String
+  id_project String
+  role      Role @default(TST)
+
+  user    User    @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  project Project @relation(fields: [id_project], references: [id_project], onDelete: Cascade)
+
+  @@id([id_user, id_project])
+}
+
+enum Severity {
+  low
+  medium
+  high
+  critical
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
+enum Status {
+  open
+  in_progress
+  resolved
+  closed
+}
+
+enum Role {
+  PM
+  TST
+}
