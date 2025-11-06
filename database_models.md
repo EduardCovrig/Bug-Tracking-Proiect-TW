@@ -1,0 +1,27 @@
+# Relatii intre tabelele aplicatiei Bug Tracking
+- **User → Project**  
+  - Relatie 1:N  
+  - Un User poate crea mai multe proiecte  
+  - `Project.created_by` referinta catre `User.id_user`  
+---
+- **Project ↔ User (prin ProjectMember)**  
+  - Relatie N:M  
+  - Un User poate fi membru in mai multe proiecte  
+  - Un Project poate avea mai multi membri  
+  - Tabel intermediar: ProjectMember  
+  - Roluri: PM (Project Member) sau TST (Tester)  
+---
+- **Project → Bug**  
+  - Relatie 1:N  
+  - Un Project poate avea mai multe bug-uri  
+  - Stergerea unui proiect sterge si bug-urile asociate (`ON DELETE CASCADE`)  
+---
+- **User → Bug (raportat)**  
+  - Relatie 1:N  
+  - Un User poate raporta mai multe bug-uri  
+  - Stergerea unui User seteaza `reported_by` in bug-uri la NULL (`ON DELETE SET NULL`)  
+---
+- **User → Bug (alocat)**  
+  - Relatie 1:N  
+  - Un User poate fi alocat pentru rezolvarea mai multor bug-uri  
+  - Stergerea unui User seteaza `assigned_to` la NULL  
