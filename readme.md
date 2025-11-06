@@ -6,7 +6,7 @@ Acesta este proiectul realizat de <span style="color: #2CBCB2">**Covrig Eduard-G
 - Database: PostgreSQL
 - Frontend: React.js
 
-[Vezi documentatie tabele SQL](database-models.ms)
+[Vezi documentatie tabele SQL](database-models.md)
 
 
 ### Ca structura, proiectul are 3 foldere principale:
