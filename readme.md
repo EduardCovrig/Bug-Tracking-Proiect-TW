@@ -1,7 +1,13 @@
 # Platforma de bug tracking 
 Acesta este proiectul realizat de <span style="color: #2CBCB2">**Covrig Eduard-Gabriel**</span> si <span style="color: #2CBCB2">**Constantin Arthur-Stefan**</span>, in cadrul Facultății de Cibernetică, Statistică și Informatică Economică (ASE Bucuresti) pentru materia de **Tehnologii Web**.
 
-Proiectul este realizat folosind **JavaScript** (Node.Js, React), **HTML**, **CSS**.
+## Tehnologii folosite:
+- Backend: Node.js, Express, Sequelize ORM, knex ORM for migrations.
+- Database: PostgreSQL
+- Frontend: React.js
+
+[Vezi documentatie tabele SQL](database-models.ms)
+
 
 ### Ca structura, proiectul are 3 foldere principale:
 
@@ -9,13 +15,14 @@ Proiectul este realizat folosind **JavaScript** (Node.Js, React), **HTML**, **CS
     2. frontend -> Partea legata de interfata utilizatorului si alte functionalitati similare.
     3. resources -> Imagini, fisiere ale caror referinte vor fi incorporate in partea de frontend.
 
+---
 ### Plan proiect:
 
 1. Analiza cerintelor
 1. Realizarea structurii generale a proiectului
 1. Realizarea CRUD RESTful Api (Implementare backend)
 1. Realizarea interfetei utilizatorului 
-    1. (Implementare HTML Raw)
+    1. (Implementare HTML)
     1. (Stilizare CSS)
 1. Conectarea backend-frontend 
 1. Testare si eliminare de posibile buguri
@@ -23,17 +30,20 @@ Proiectul este realizat folosind **JavaScript** (Node.Js, React), **HTML**, **CS
 1. Prezentare proiect
 
 
+---
+### Platforma va avea urmatoarele functionalitati principale:
 
-### Site-ul web, va fi format din doua componente principale:
-1. In cazul in care utilizator se logheaza ca **membru intr-un proiect**, acesta poate sa incarce un proiect software specificand detalii specifice precum: 
-    - repository
-    - ceilalti membrii din echipa.
-2. In cazul in care utilizatorul se logheaza ca un membru care nu face parte dintr-un proiect, acesta poate alege un proiect dintr-o sectiune de **Search Projects**, pentru care acesta devine **TESTER**. Ca Tester, utilizator poate sa adauge un bug in sectiunea de **Bug Tracking**, avand detalii specifice precum: 
-    - descriere problema
-    - commit-ul cu problema
-    - cat de grav este bug-ul
+Orice utilizator poate accesa site-ul in doua roluri principale:
+- MP (membru al unui proiect software)
+- TST (utilizator care nu face parte din niciun proiect și alege să foloseaca site-ul ca tester pentru proiectele existente pe platforma).
 
-Din sectiunea de **Bug Tracking**, membrii din proiect pot marca ca rezolvate bugurile ulterior, astfel realizandu-se comunicarea dintre membrii proiectului si testeri.
+Daca un utilizator se conectează ca **membru fără proiect**, acesta are posibilitatea de a explora secțiunea **Search Projects** și de a se alătura unui proiect ca Tester. În aceasta calitate, utilizatorul poate raporta bug-uri în cadrul secțiunii **Bug Tracking**, furnizand informatii detaliate precum:
 
+1. descrierea problemei,
 
+1. commit-ul în care apare bug-ul,
+
+1. severitatea acestuia.
+
+Membrii proiectului pot vizualiza bug-urile raportate și pot marca ulterior problemele ca fiind rezolvate din sectiunea de **Bug Tracking** din cadrul paginii proiectului, astfel avand loc **o comunicare eficientă între echipă și testeri.**
 
