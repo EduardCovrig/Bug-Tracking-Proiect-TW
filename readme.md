@@ -1,9 +1,12 @@
 # Platforma de bug tracking 
 Acesta este proiectul realizat de <span style="color: #2CBCB2">**Covrig Eduard-Gabriel**</span> si <span style="color: #2CBCB2">**Constantin Arthur-Stefan**</span>, in cadrul Facultății de Cibernetică, Statistică și Informatică Economică (ASE Bucuresti) pentru materia de **Tehnologii Web**.
 
+## Pentru informatii despre cum sa rulezi backend-ul, [acceseaza](back/readme.md)!
+## Pentru informatii despre cum sa rulezi frontend-ul, [NOT YET IMPLEMENTED]()!
+
 ## Tehnologii folosite:
-- Backend: Node.js, Express.Js
-- Database: PostgreSQL with Prisma ORM
+- Backend: Node.js, Express.Js, JWT pentru autentificare
+- Database: PostgreSQL, Prisma ORM
 - Frontend: React.js
 
 [Vezi documentatie tabele SQL](database_models.md)
@@ -11,8 +14,8 @@ Acesta este proiectul realizat de <span style="color: #2CBCB2">**Covrig Eduard-G
 
 ### Ca structura, proiectul are 3 foldere principale:
 
-    1. backend -> REST Api si alte functionalitati similare.
-    2. frontend -> Partea legata de interfata utilizatorului si alte functionalitati similare.
+    1. backend -> REST Api & Database
+    2. frontend -> Interfata utilizatorului
     3. resources -> Imagini, fisiere ale caror referinte vor fi incorporate in partea de frontend.
 
 ---
@@ -46,4 +49,3 @@ Daca un utilizator se conectează ca **membru fără proiect**, acesta are posib
 1. severitatea acestuia.
 
 Membrii proiectului pot vizualiza bug-urile raportate și pot marca ulterior problemele ca fiind rezolvate din sectiunea de **Bug Tracking** din cadrul paginii proiectului, astfel avand loc **o comunicare eficientă între echipă și testeri.**
-

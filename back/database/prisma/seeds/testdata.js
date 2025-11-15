@@ -1,98 +1,149 @@
-//DO npx prisma migrate reset before running
-
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import 'dotenv/config'; // Incarca DATABASE_URL si JWT_SECRET
+
 const prisma = new PrismaClient();
+const saltRounds = 10;
 
 async function main() {
-  const eduard = await prisma.user.create({
+  console.log('--- Starting Seeding Process ---');
+
+  // 1. --- HASHING PAROLE ---
+  const hashedPassword = await bcrypt.hash('password123', saltRounds);
+  const tstPassword = await bcrypt.hash('tester123', saltRounds);
+  
+  // Sterge datele vechi
+  await prisma.projectMember.deleteMany({});
+  await prisma.bug.deleteMany({});
+  await prisma.project.deleteMany({});
+  await prisma.user.deleteMany({});
+  console.log('Cleaned up previous data.');
+
+  // 2. --- CREEAZA UTILIZATORI ---
+  // PM: Project Manager (Creatorul proiectului principal)
+  const pmEduard = await prisma.user.create({
     data: {
-      username: 'eduard',
-      email: 'eduard@example.com',
-      password: '1234',
+      username: 'Covrig Eduard',
+      email: 'eduard@pm.com',
+      password: hashedPassword,
     },
   });
 
-  const arthur = await prisma.user.create({
+  // TST: Tester (Membru al proiectului principal)
+  const tstArthur = await prisma.user.create({
     data: {
-      username: 'arthur',
-      email: 'arthur@example.com',
-      password: 'abcd',
+      username: 'Constantin Arthur',
+      email: 'arthur@tst.com',
+      password: tstPassword,
     },
   });
 
-  const maria = await prisma.user.create({
+  // User simplu (Creatorul proiectului secundar)
+  const dualCore = await prisma.user.create({
     data: {
-      username: 'maria',
-      email: 'maria@example.com',
-      password: 'pass',
+      username: 'DualCore Test',
+      email: 'dualcore@test.com',
+      password: tstPassword,
+    },
+  });
+  
+  console.log('3 Users created.');
+
+  // 3. --- CREEAZA PROIECTE ---
+  const projectApp = await prisma.project.create({
+    data: {
+      name: 'Bug Tracker App',
+      description: 'Platforma de management a bug-urilor.',
+      repository: 'https://github.com/bug-tracker',
+      created_by: pmEduard.id_user, // Eduard este Creatorul
+    },
+  });
+  
+  const projectLegacy = await prisma.project.create({
+    data: {
+      name: 'Legacy System',
+      description: 'Sistem vechi, plin de erori.',
+      repository: 'https://github.com/legacy',
+      created_by: dualCore.id_user, // DualCore este Creatorul
+    },
+  });
+  
+  console.log('2 Projects created.');
+
+  // 4. --- ADAUGARE MEMBRI (ROL) ---
+  
+  // Eduard (Creator) este setat explicit ca PM in proiectul sau
+  await prisma.projectMember.create({
+    data: {
+      id_user: pmEduard.id_user,
+      id_project: projectApp.id_project,
+      role: 'PM',
+    },
+  });
+  
+  // Arthur este setat ca Tester (TST)
+  await prisma.projectMember.create({
+    data: {
+      id_user: tstArthur.id_user,
+      id_project: projectApp.id_project,
+      role: 'TST',
     },
   });
 
-  const bugTracker = await prisma.project.create({
+  console.log('Memberships created.');
+
+  // 5. --- CREEAZA BUG-URI ---
+  
+  // Bug 1: Raportat de Arthur, Alocat lui Eduard (PM)
+  await prisma.bug.create({
     data: {
-      name: 'BugTracker',
-      description: 'Sistem de gestionare bug-uri',
-      repository: 'https://github.com/eduard/bugtracker',
-      created_by: eduard.id_user,
-      members: {
-        create: [
-          { id_user: eduard.id_user, role: 'PM' },
-          { id_user: arthur.id_user, role: 'TST' },
-        ],
-      },
+      id_project: projectApp.id_project,
+      reported_by: tstArthur.id_user,
+      assigned_to: pmEduard.id_user, // Bug alocat PM-ului
+      severity: 'critical',
+      priority: 'high',
+      description: 'Logarea esueaza pe mobil.',
+      commit_link: 'n/a',
+      status: 'in_progress',
     },
   });
 
-  const mobileApp = await prisma.project.create({
+  // Bug 2: Raportat de Eduard (PM), Niciun asignat
+  await prisma.bug.create({
     data: {
-      name: 'MobileApp',
-      description: 'Aplicație mobilă demo',
-      repository: 'https://github.com/maria/mobileapp',
-      created_by: maria.id_user,
-      members: {
-        create: [{ id_user: maria.id_user, role: 'PM' }],
-      },
+      id_project: projectApp.id_project,
+      reported_by: pmEduard.id_user,
+      severity: 'medium',
+      priority: 'low',
+      description: 'Erori de scriere la text.',
+      commit_link: 'n/a',
+      status: 'open',
+    },
+  });
+  
+  // Bug 3: Bug pentru Legacy System, raportat de Arthur (TST)
+  await prisma.bug.create({
+    data: {
+      id_project: projectLegacy.id_project,
+      reported_by: tstArthur.id_user,
+      severity: 'low',
+      priority: 'low',
+      description: 'O imagine nu se incarca.',
+      commit_link: 'n/a',
+      status: 'resolved',
     },
   });
 
-  await prisma.bug.createMany({
-    data: [
-      {
-        id_project: bugTracker.id_project,
-        reported_by: arthur.id_user,
-        assigned_to: eduard.id_user,
-        severity: 'high',
-        priority: 'high',
-        description: 'Login page fails when password is empty',
-        commit_link: 'https://github.com/eduard/bugtracker/commit/abcd1234',
-        status: 'open',
-      },
-      {
-        id_project: bugTracker.id_project,
-        reported_by: eduard.id_user,
-        assigned_to: arthur.id_user,
-        severity: 'medium',
-        priority: 'low',
-        description: 'Button color not following theme',
-        commit_link: 'https://github.com/eduard/bugtracker/commit/efgh5678',
-        status: 'in_progress',
-      },
-      {
-        id_project: mobileApp.id_project,
-        reported_by: maria.id_user,
-        assigned_to: null,
-        severity: 'critical',
-        priority: 'high',
-        description: 'Crash on startup iOS 17',
-        commit_link: 'https://github.com/maria/mobileapp/commit/ijkl9999',
-        status: 'open',
-      },
-    ],
-  });
+  console.log('3 Bugs created.');
+  
 }
 
 main()
-  .catch((e) => console.error(e))
+  .catch((e) => {
+    console.error('Seeding failed:', e);
+    process.exit(1);
+  })
   .finally(async () => {
     await prisma.$disconnect();
+    console.log('--- Seeding finished successfully. ---');
   });

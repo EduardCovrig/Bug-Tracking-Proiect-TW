@@ -25,6 +25,15 @@ export class ProjectRepository {
       }
     });
   }
+  
+  //Returneaza doar ID-ul creatorului pentru verificarea de autorizare
+  async findCreatorId(id_project) {
+    const project = await prisma.project.findUnique({
+      where: { id_project },
+      select: { created_by: true }
+    });
+    return project ? project.created_by : null;
+  }
 
   async update(id_project, data) {
     return prisma.project.update({

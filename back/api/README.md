@@ -1,6 +1,6 @@
 # REST API Structure (EN)
 
-I divided the backend into **4 distinct folders**, each handling a specific part of the process. Inside each of these, there will be multiple files, like **"tableFolder"**, where:
+I divided the backend into **4 distinct folders** + 1 middleware for authentication, each handling a specific part of the process. Inside each of these, there will be multiple files, like **"tableFolder"**, where:
  - **table** represents the name of the database table being worked with
  - **Folder** represents the type of actions that will be found there:
 
@@ -16,7 +16,7 @@ I divided the backend into **4 distinct folders**, each handling a specific part
 ---
 
 # Structura REST API (RO)
-Am impartit backend-ul in **4 foldere distincte**, fiecare ocupandu-se cu o anumita parte a procesului. In fiecare dintre acestea, se vor gasi mai multe fisiere, de forma **"tableFolder"**, unde:
+Am impartit backend-ul in **4 foldere distincte** + 1 middleware pt autentificare, fiecare ocupandu-se cu o anumita parte a procesului. In fiecare dintre acestea, se vor gasi mai multe fisiere, de forma **"tableFolder"**, unde:
  - **table** reprezinta numele tabelei din baza de date cu care se lucreaza
  - **Folder** reprezinta tipul de actiuni care se vor regasi acolo:
 
