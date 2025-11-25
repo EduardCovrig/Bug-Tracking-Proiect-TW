@@ -1,9 +1,10 @@
-import express from 'express';
-import { BugController } from '../controllers/bugController.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
+import express from 'express'; //express
+import { BugController } from '../controllers/bugController.js'; //controller-ul cu endpointurile de bug
+import { authMiddleware } from '../middlewares/authMiddleware.js'; //middleware de autentificare
+//middleware-ul e folosit pe fiecare ruta, ca toate rutele de bug necesita autentificare
 
-const router = express.Router();
-const bugController = new BugController();
+const router = express.Router(); //facem router ca avem mai multe rute
+const bugController = new BugController(); //facem instanta
 
 router.post('/',authMiddleware,(req, res) => bugController.createBug(req, res)); // Creare Bug
 router.get('/', authMiddleware,(req, res) => bugController.getAllBugs(req, res)); // Preluare lista Bug-uri
@@ -16,4 +17,4 @@ router.get('/:id', authMiddleware,(req, res) => bugController.getBugById(req, re
 router.put('/:id', authMiddleware,(req, res) => bugController.updateBug(req, res)); // Actualizare Bug (dupa id)
 router.delete('/:id',authMiddleware, (req, res) => bugController.deleteBug(req, res)); // Stergere Bug (dupa id)
 
-export default router;
+export default router; //exportam mai departe catre app.js

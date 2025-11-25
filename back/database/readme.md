@@ -1,12 +1,43 @@
-### Ruleaza comenzile din database! 
+### 📌 Run the commands from *./database*! (EN)
 ---
-## Sterge toata tabelele din baza de date si le recreeaza: 
+
+#### 🔄 Reset database (delete all tables and recreate them using the latest migration):
+```bash
 npx prisma migrate reset
+```
+
+#### 💾 Apply schema.prisma changes (use after modifing schema.prisma, makes a new migration file):
+```bash
+npx prisma migrate dev --name <migration_name>
+```
+
+#### 🧪 Load test data:
+```bash
+cd ..
+npm run seed
+```
+(Executes `testdata.js` from `./back/database/seeds/testdata.js`)
+
+
+
 ---
-## Daca ai modificat schema.prisma si vrei sa o aplici (ca un fel de save) 
+
+### 📌 Ruleaza comenzile din *./database*! (RO)
+---
+
+#### 🔄 Reseteaza baza de date (sterge toate tabelele si le recreeaza folosing ultima migratie):
+```bash
+npx prisma migrate reset
+```
+
+#### 💾 Aplica modificarile din schema.prisma (foloseste dupa ce ai modificat schema.prisma, face un nou fisier de migrare pentru viitor):
+```bash
 npx prisma migrate dev --name <nume_migratie>
+```
 
-# Pentru date de test, mergi in /back si ruleaza npm run seed. (ruleaza testdata.js din ./back/database/seeds/testdata.js)
-
-
-
+#### 🧪 Incarca date de test:
+```bash
+cd ..
+npm run seed
+```
+(Ruleaza `testdata.js` din `./back/database/seeds/testdata.js`)

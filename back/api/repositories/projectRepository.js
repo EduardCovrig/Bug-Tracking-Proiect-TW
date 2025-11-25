@@ -1,11 +1,11 @@
-import prisma from '../../database/prismaClient.js';
+import prisma from '../../database/prismaClient.js'; //importa baza de date
 
 export class ProjectRepository {
-  async create(data) {
+  async create(data) { //creeaza un proiect nou in baza de date
     return prisma.project.create({ data });
   }
 
-  async findAll() {
+  async findAll() { //ia toate proiectele din baza de date, incluzand si metodele de acces catre foreign key-uri
     return prisma.project.findMany({
       include: {
         createdBy: true,
@@ -15,7 +15,7 @@ export class ProjectRepository {
     });
   }
 
-  async findById(id_project) {
+  async findById(id_project) { //gaseste un proiect dupa id_project
     return prisma.project.findUnique({
       where: { id_project },
       include: {
@@ -32,17 +32,17 @@ export class ProjectRepository {
       where: { id_project },
       select: { created_by: true }
     });
-    return project ? project.created_by : null;
+    return project ? project.created_by : null; //daca nu il gaseste, null
   }
 
-  async update(id_project, data) {
+  async update(id_project, data) { //actualizeaza un proiect dupa id_project
     return prisma.project.update({
       where: { id_project },
       data
     });
   }
 
-  async delete(id_project) {
+  async delete(id_project) { //sterge un proiect dupa id_project
     return prisma.project.delete({
       where: { id_project }
     });

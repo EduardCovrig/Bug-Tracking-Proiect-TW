@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'; //pt token JWT
 import 'dotenv/config'; //pt a citi cheia secreta din .env
 
 const JWT_SECRET = process.env.JWT_SECRET; // o citeste
 
 export const authMiddleware = (req, res, next) => {
-  // Tokenul este trimis de obicei sub forma: Authorization: Bearer <token>
+  // Tokenul este trimis pe rute sub forma: Authorization: Bearer <token> (in headers)
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) { //daca nu respecta forma
@@ -12,17 +12,17 @@ export const authMiddleware = (req, res, next) => {
   }
 
   // extrage tokeul fara bearer
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1]; //separa dupa spatii, si ia al doilea termen, adica fix tokenul.
 
   try {
-    // verifica validitatea tokenului primat si decodeaza
+    // verifica validitatea tokenului primit si decodeaza datele
     const decoded = jwt.verify(token, JWT_SECRET);
 
     //pune dele utilizatorului in obiectul request
     //astfel, controlerul stie face cererea (req.user.id_user)
     req.user = decoded; 
 
-    // trece mai departe la controller
+    // trece mai departe din service la controller
     next();
   } catch (ex) {
     //pt orice exceptie: 

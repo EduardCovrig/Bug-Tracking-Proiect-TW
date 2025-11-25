@@ -1,14 +1,15 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { UserRepository } from '../repositories/userRepository.js'; 
+import bcrypt from 'bcrypt'; //pentru criptare/ decriptare parola
+import jwt from 'jsonwebtoken'; //JWT pentru token
+import { UserRepository } from '../repositories/userRepository.js'; //importa metodele pentru a folosi baza de date
 import 'dotenv/config'; // Pentru a citi cheia secreta din .env
 
-const userRepository = new UserRepository();
-const JWT_SECRET = process.env.JWT_SECRET 
+const userRepository = new UserRepository(); //facem instanta noua pt repository
+const JWT_SECRET = process.env.JWT_SECRET //ia cheia jwt din .env
 
 export class AuthService {
 
-  async register(data) {
+  // METODA PENTRU INREGISTRARE UTILIZATOR NOU
+  async register(data) { 
     const { username, email, password } = data;
 
     //verifica daca exista deja in baza de date
@@ -31,7 +32,7 @@ export class AuthService {
     });
   }
 
-  //logare
+  // METODA PENTRU LOGARE UTILIZATOR EXISTENT
   async login(email, password) {
     
     //cauta utilizatorul dupa email
@@ -50,7 +51,7 @@ export class AuthService {
     const token = jwt.sign(
       { id_user: user.id_user, email: user.email },
       JWT_SECRET,
-      { expiresIn: '1h' } //tokenul expira dupa o ora
+      { expiresIn: '12h' } //tokenul expira dupa 12 ore.
     );
 
     //daca totul merge ok, returneaza tokenul si datele utilizatorului.

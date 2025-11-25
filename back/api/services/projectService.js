@@ -1,21 +1,21 @@
-import { ProjectRepository } from '../repositories/projectRepository.js';
+import { ProjectRepository } from '../repositories/projectRepository.js'; //repo pentru a avea acces la baza de date.
 
 export class ProjectService {
   constructor() {
-    this.projectRepository = new ProjectRepository();
+    this.projectRepository = new ProjectRepository(); //facem instantan noua.
   }
 
-  async createProject(data) {
-    return this.projectRepository.create(data);
+  async createProject(data) { //creeaza proiect nou
+    return this.projectRepository.create(data); 
   }
 
-  async getAllProjects() {
+  async getAllProjects() { //ia toate proiectele
     return this.projectRepository.findAll();
   }
   
   // Preluare ID-ul creatorului proiectului
   async getProjectCreatorId(id_project) {
-    const creatorId = await this.projectRepository.findCreatorId(id_project);
+    const creatorId = await this.projectRepository.findCreatorId(id_project); //facem await pentru ca aici trebuie sa gestionam promisiunea
     if (!creatorId) throw new Error('Project not found');
     return creatorId;
   }
@@ -26,12 +26,12 @@ export class ProjectService {
     return project; // altfel, returneaza proiectul 
   }
 
-  async updateProject(id_project, data) {
+  async updateProject(id_project, data) { //actualizeza proiect dupa id_project
     // verificarea existentei o face getProjectCreatorId
     return this.projectRepository.update(id_project, data);
   }
 
-  async deleteProject(id_project) {
+  async deleteProject(id_project) { //sterge proiect dupa id_project
     // la fel si aici
     return this.projectRepository.delete(id_project); 
   }

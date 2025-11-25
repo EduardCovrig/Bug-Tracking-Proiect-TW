@@ -1,11 +1,11 @@
-import prisma from '../../database/prismaClient.js';
+import prisma from '../../database/prismaClient.js'; //importa baza de date
 
-export class BugRepository {
-  async create(data) {
+export class BugRepository { 
+  async create(data) { //metoda pentru a crea un bug nou in baza de date
     return prisma.bug.create({ data });
   }
 
-  async findAll() {
+  async findAll() { //metoda pentru a lua toate bugurile din baza de date, incluzand si metoda de acces catre foreign key-uri
     return prisma.bug.findMany({
       include: {
         project: true,
@@ -31,6 +31,7 @@ export class BugRepository {
     });
   }
 
+  // gasire bug dupa id
   async findById(id_bug) {
     return prisma.bug.findUnique({
       where: { id_bug },
@@ -50,6 +51,7 @@ export class BugRepository {
       });
   }
 
+  //actualizeaza un bug dupa id
   async update(id_bug, data) {
     return prisma.bug.update({
       where: { id_bug },
@@ -57,6 +59,7 @@ export class BugRepository {
     });
   }
 
+  //sterge un bug
   async delete(id_bug) {
     return prisma.bug.delete({
       where: { id_bug }

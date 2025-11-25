@@ -1,15 +1,16 @@
-import { BugRepository } from '../repositories/bugRepository.js';
+import { BugRepository } from '../repositories/bugRepository.js'; //importa repostiory pentru a accesa metode legate de accesul la baza
+// de date
 
 export class BugService {
   constructor() {
-    this.bugRepository = new BugRepository();
+    this.bugRepository = new BugRepository(); //cream instanta pentru repository pt a-l folosi mai jos in metode.
   }
 
-  async createBug(data) {
+  async createBug(data) { //creaza un bug nou
     return this.bugRepository.create(data);
   }
 
-  async getAllBugs() {
+  async getAllBugs() { //ia toate bugurile
     return this.bugRepository.findAll();
   }
   
@@ -23,7 +24,7 @@ export class BugService {
     return this.bugRepository.findByAssignedTo(assigned_to);
   }
 
-  async getBugById(id_bug) {
+  async getBugById(id_bug) { //gaseste bug dupa id
     const bug = await this.bugRepository.findById(id_bug);
     if (!bug) throw new Error('Bug not found');
     return bug;
@@ -36,12 +37,12 @@ export class BugService {
       return details;
   }
 
-  async updateBug(id_bug, data) {
+  async updateBug(id_bug, data) { //actualizeaza bug dupa id
     await this.getBugById(id_bug); // Verifica existenta
     return this.bugRepository.update(id_bug, data);
   }
 
-  async deleteBug(id_bug) {
+  async deleteBug(id_bug) { //sterge bug dupa id
     await this.getBugById(id_bug); // Verifica existenta
     return this.bugRepository.delete(id_bug);
   }

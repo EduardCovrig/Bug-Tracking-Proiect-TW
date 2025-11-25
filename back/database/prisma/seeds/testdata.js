@@ -1,141 +1,108 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import 'dotenv/config'; // Incarca DATABASE_URL si JWT_SECRET
+import 'dotenv/config'; // incarcam .env (DATABASE_URL, JWT_SECRET)
+
+// Aici sunt niste date de test pentru baza de date, creand cateva date pentru fiecare tabela.
 
 const prisma = new PrismaClient();
-const saltRounds = 10;
+const saltRounds = 10; //asa sunt peste tot in proiect
 
 async function main() {
   console.log('--- Starting Seeding Process ---');
 
-  // 1. --- HASHING PAROLE ---
-  const hashedPassword = await bcrypt.hash('password123', saltRounds);
-  const tstPassword = await bcrypt.hash('tester123', saltRounds);
-  
-  // Sterge datele vechi
+  // --- STEP 0: Sterge datele vechi ---
   await prisma.projectMember.deleteMany({});
   await prisma.bug.deleteMany({});
   await prisma.project.deleteMany({});
   await prisma.user.deleteMany({});
-  console.log('Cleaned up previous data.');
+  console.log('Old data cleared.');
 
-  // 2. --- CREEAZA UTILIZATORI ---
-  // PM: Project Manager (Creatorul proiectului principal)
-  const pmEduard = await prisma.user.create({
-    data: {
-      username: 'Covrig Eduard',
-      email: 'eduard@pm.com',
-      password: hashedPassword,
-    },
+  // --- STEP 1: Creeaza Utilizatori ---
+  const eduardPassword = await bcrypt.hash('eduard123', saltRounds);
+  const arthurPassword = await bcrypt.hash('arthur123', saltRounds);
+
+  const eduard = await prisma.user.create({
+    data: { username: 'Covrig Eduard', email: 'eduard@test.com', password: eduardPassword }
   });
 
-  // TST: Tester (Membru al proiectului principal)
-  const tstArthur = await prisma.user.create({
-    data: {
-      username: 'Constantin Arthur',
-      email: 'arthur@tst.com',
-      password: tstPassword,
-    },
+  const arthur = await prisma.user.create({
+    data: { username: 'Constantin Arthur', email: 'arthur@test.com', password: arthurPassword }
   });
 
-  // User simplu (Creatorul proiectului secundar)
-  const dualCore = await prisma.user.create({
-    data: {
-      username: 'DualCore Test',
-      email: 'dualcore@test.com',
-      password: tstPassword,
-    },
+  const dualCoreUser = await prisma.user.create({
+    data: { username: 'Dual-Core', email: 'dualcore@test.com', password: arthurPassword }
   });
-  
-  console.log('3 Users created.');
 
-  // 3. --- CREEAZA PROIECTE ---
-  const projectApp = await prisma.project.create({
+  console.log('3 users created.');
+
+  // --- STEP 2: Creeaza Proiecte ---
+  const mainProject = await prisma.project.create({
     data: {
       name: 'Bug Tracker App',
-      description: 'Platforma de management a bug-urilor.',
+      description: 'Platforma pentru management bug-uri',
       repository: 'https://github.com/bug-tracker',
-      created_by: pmEduard.id_user, // Eduard este Creatorul
-    },
-  });
-  
-  const projectLegacy = await prisma.project.create({
-    data: {
-      name: 'Legacy System',
-      description: 'Sistem vechi, plin de erori.',
-      repository: 'https://github.com/legacy',
-      created_by: dualCore.id_user, // DualCore este Creatorul
-    },
-  });
-  
-  console.log('2 Projects created.');
-
-  // 4. --- ADAUGARE MEMBRI (ROL) ---
-  
-  // Eduard (Creator) este setat explicit ca PM in proiectul sau
-  await prisma.projectMember.create({
-    data: {
-      id_user: pmEduard.id_user,
-      id_project: projectApp.id_project,
-      role: 'PM',
-    },
-  });
-  
-  // Arthur este setat ca Tester (TST)
-  await prisma.projectMember.create({
-    data: {
-      id_user: tstArthur.id_user,
-      id_project: projectApp.id_project,
-      role: 'TST',
-    },
+      created_by: eduard.id_user
+    }
   });
 
-  console.log('Memberships created.');
-
-  // 5. --- CREEAZA BUG-URI ---
-  
-  // Bug 1: Raportat de Arthur, Alocat lui Eduard (PM)
-  await prisma.bug.create({
+  const dualProject = await prisma.project.create({
     data: {
-      id_project: projectApp.id_project,
-      reported_by: tstArthur.id_user,
-      assigned_to: pmEduard.id_user, // Bug alocat PM-ului
-      severity: 'critical',
-      priority: 'high',
-      description: 'Logarea esueaza pe mobil.',
-      commit_link: 'n/a',
-      status: 'in_progress',
-    },
+      name: 'Dual-Core Project',
+      description: 'Proiect secundar cu teste',
+      repository: 'https://github.com/dual-core',
+      created_by: dualCoreUser.id_user
+    }
   });
 
-  // Bug 2: Raportat de Eduard (PM), Niciun asignat
-  await prisma.bug.create({
-    data: {
-      id_project: projectApp.id_project,
-      reported_by: pmEduard.id_user,
-      severity: 'medium',
-      priority: 'low',
-      description: 'Erori de scriere la text.',
-      commit_link: 'n/a',
-      status: 'open',
-    },
-  });
-  
-  // Bug 3: Bug pentru Legacy System, raportat de Arthur (TST)
-  await prisma.bug.create({
-    data: {
-      id_project: projectLegacy.id_project,
-      reported_by: tstArthur.id_user,
-      severity: 'low',
-      priority: 'low',
-      description: 'O imagine nu se incarca.',
-      commit_link: 'n/a',
-      status: 'resolved',
-    },
+  console.log('2 projects created.');
+
+  // --- STEP 3: Adauga Membri in Proiecte ---
+  await prisma.projectMember.createMany({
+    data: [
+      { id_user: eduard.id_user, id_project: mainProject.id_project, role: 'PM' },
+      { id_user: arthur.id_user, id_project: mainProject.id_project, role: 'TST' },
+      { id_user: dualCoreUser.id_user, id_project: dualProject.id_project, role: 'PM' }
+    ]
   });
 
-  console.log('3 Bugs created.');
-  
+  console.log('Project memberships created.');
+
+  // --- STEP 4: Creeaza Bug-uri ---
+  await prisma.bug.createMany({
+    data: [
+      {
+        id_project: mainProject.id_project,
+        reported_by: arthur.id_user,
+        assigned_to: eduard.id_user,
+        severity: 'critical',
+        priority: 'high',
+        description: 'Logarea esueaza pe mobil.',
+        commit_link: 'n/a',
+        status: 'in_progress'
+      },
+      {
+        id_project: mainProject.id_project,
+        reported_by: eduard.id_user,
+        severity: 'medium',
+        priority: 'low',
+        description: 'Erori la text input.',
+        commit_link: 'n/a',
+        status: 'open'
+      },
+      {
+        id_project: dualProject.id_project,
+        reported_by: arthur.id_user,
+        assigned_to: dualCoreUser.id_user,
+        severity: 'low',
+        priority: 'medium',
+        description: 'Imagine lipsa in dashboard.',
+        commit_link: 'n/a',
+        status: 'resolved'
+      }
+    ]
+  });
+
+  console.log('3 bugs created.');
 }
 
 main()
@@ -145,5 +112,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-    console.log('--- Seeding finished successfully. ---');
+    console.log('--- Seeding finished successfully ---');
   });
