@@ -1,51 +1,137 @@
-# Platforma de bug tracking 
-Acesta este proiectul realizat de <span style="color: #2CBCB2">**Covrig Eduard-Gabriel**</span> si <span style="color: #2CBCB2">**Constantin Arthur-Stefan**</span>, in cadrul Facultății de Cibernetică, Statistică și Informatică Economică (ASE Bucuresti) pentru materia de **Tehnologii Web**.
+# 🐞 Bug Tracking Platform (EN)
 
-## Pentru informatii despre cum sa rulezi backend-ul, [acceseaza](back/readme.md)!
-## Pentru informatii despre cum sa rulezi frontend-ul, [NOT YET IMPLEMENTED]()!
-
-## Tehnologii folosite:
-- Backend: Node.js, Express.Js, JWT pentru autentificare
-- Database: PostgreSQL, Prisma ORM
-- Frontend: React.js
-
-[Vezi documentatie tabele SQL](database_models.md)
-
-
-### Ca structura, proiectul are 3 foldere principale:
-
-    1. backend -> REST Api & Database
-    2. frontend -> Interfata utilizatorului
-    3. resources -> Imagini, fisiere ale caror referinte vor fi incorporate in partea de frontend.
+This project was created by   <span style="color: #2CBCB2; font-weight: bold;">Covrig Eduard-Gabriel</span> and  <span style="color: #2CBCB2; font-weight: bold;">Constantin Arthur-Stefan</span>,  as part of the **Web Technologies** course at the Faculty of Cybernetics, Statistics and Economic Informatics (ASE Bucharest).
 
 ---
-### Plan proiect:
 
-1. Analiza cerintelor
-1. Realizarea structurii generale a proiectului
-1. Realizarea CRUD RESTful Api (Implementare backend)
-1. Realizarea interfetei utilizatorului 
-    1. (Implementare HTML)
-    1. (Stilizare CSS)
-1. Conectarea backend-frontend 
-1. Testare si eliminare de posibile buguri
-1. Adaugare de comentarii finale in cod
-1. Prezentare proiect
+## 📘 Documentation Links
+- For backend run instructions: **[Click here](back/readme.md)**
+- For frontend run instructions: **NOT YET IMPLEMENTED**
+
+---
+
+## 🛠️ Technologies Used
+- **Backend:** Node.js, Express.js, JWT with bcrypt for authentication  
+- **Database:** PostgreSQL, Prisma ORM  
+- **Frontend:** React.js  
+
+👉 **See SQL Tables Documentation:** [Database information](database/database_models.md)
+![Database Model](database/database_model.png)
 
 
 ---
-### Platforma va avea urmatoarele functionalitati principale:
 
-Orice utilizator poate accesa site-ul in doua roluri principale:
-- MP (membru al unui proiect software)
-- TST (utilizator care nu face parte din niciun proiect și alege să foloseaca site-ul ca tester pentru proiectele existente pe platforma).
+## 📁 Project Structure
 
-Daca un utilizator se conectează ca **membru fără proiect**, acesta are posibilitatea de a explora secțiunea **Search Projects** și de a se alătura unui proiect ca Tester. În aceasta calitate, utilizatorul poate raporta bug-uri în cadrul secțiunii **Bug Tracking**, furnizand informatii detaliate precum:
+The project is organized into **two main folders**:
 
-1. descrierea problemei,
+- **back**  → REST API & Database  
+- **front** → User Interface  
 
-1. commit-ul în care apare bug-ul,
+---
 
-1. severitatea acestuia.
+## 📝 Project Plan
 
-Membrii proiectului pot vizualiza bug-urile raportate și pot marca ulterior problemele ca fiind rezolvate din sectiunea de **Bug Tracking** din cadrul paginii proiectului, astfel avand loc **o comunicare eficientă între echipă și testeri.**
+1. Requirements analysis  
+2. General project structure setup  
+3. CRUD RESTful API development (backend implementation)  
+4. User interface development  
+   - HTML implementation  
+   - CSS styling  
+5. Backend–frontend connection  
+6. Testing and bug fixing  
+7. Adding final code comments  
+8. Project presentation  
+
+---
+
+## 🔧 Platform Functionalities
+
+Any user can access the site under two main roles:
+
+- **MP** (member of a software project)  
+- **TST** (tester: a user who is not part of any project but tests existing projects)
+
+### 👤 If a user logs in as a **member without a project**:
+They can browse the **Search Projects** section and join a project as a **Tester**.
+
+As a tester, the user can report bugs through the **Bug Tracking** section, providing:
+
+1. a description of the issue  
+2. the commit where the bug appears  
+3. the severity level  
+
+### 👨‍💻 For project members:
+They can view all reported bugs and mark them as *resolved* from the **Bug Tracking** section on the project page.
+
+This ensures **efficient communication between the team and testers**, enabling faster debugging and better project workflow.
+
+
+---
+---
+
+# 🐞 Platforma de Bug Tracking (RO)
+
+Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;">Covrig Eduard-Gabriel</span> si <span style="color: #2CBCB2; font-weight: bold;">Constantin Arthur-Stefan</span>, in cadrul cursului de **Tehnologii Web** la Facultatea de Cibernetica, Statistica si Informatica Economica (ASE Bucuresti).
+
+---
+
+## 📘 Link-uri Documentatie
+- Pentru instructiuni de rulare backend: **[Click aici](back/readme.md)**
+- Pentru instructiuni de rulare frontend: **INCA NEIMPLEMENTAT**
+
+---
+
+## 🛠️ Tehnologii folosite
+- **Backend:** Node.js, Express.js, JWT pentru autentificare  
+- **Baza de date:** PostgreSQL, Prisma ORM  
+- **Frontend:** React.js  
+
+👉 **Vezi documentatia tabelelor SQL:** [Informatii despre baza de date](database/database_models.md)
+![Database Model](database/database_model.png)
+
+---
+
+## 📁 Structura Proiectului
+
+Proiectul este organizat in **doua foldere principale**:
+
+- **back**  → REST API si baza de date  
+- **front** → Interfata utilizator  
+---
+
+## 📝 Plan Proiect
+
+1. Analiza cerintelor  
+2. Stabilirea structurii generale a proiectului  
+3. Dezvoltarea CRUD RESTful API (implementare backend)  
+4. Dezvoltarea interfetei utilizator  
+   - Implementare HTML  
+   - Stilizare CSS  
+5. Conectarea backend–frontend  
+6. Testare si corectarea bug-urilor  
+7. Adaugarea comentariilor finale in cod  
+8. Prezentarea proiectului  
+
+---
+
+## 🔧 Functionalitati Platforma
+
+Orice utilizator poate accesa site-ul cu doua roluri principale:
+
+- **MP** (membru al unui proiect software)  
+- **TST** (tester: utilizator care nu face parte din niciun proiect si testeaza proiectele existente)
+
+### 👤 Daca un utilizator se conecteaza ca **membru fara proiect**:
+Acesta poate naviga in sectiunea **Search Projects** si se poate alatura unui proiect ca **Tester**.
+
+In calitate de tester, utilizatorul poate raporta bug-uri in sectiunea **Bug Tracking**, furnizand:
+
+1. descrierea problemei  
+2. commit-ul in care apare bug-ul  
+3. nivelul de severitate  
+
+### 👨‍💻 Pentru membrii proiectului:
+Acestia pot vizualiza toate bug-urile raportate si le pot marca ca *rezolvate* in sectiunea **Bug Tracking** a paginii proiectului.
+
+Aceasta asigura **o comunicare eficienta intre echipa si testeri**, facilitand rezolvarea rapida a problemelor si un flux de lucru mai eficient.
