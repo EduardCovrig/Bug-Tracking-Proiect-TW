@@ -16,7 +16,7 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 - **Frontend:** React.js  
 
 👉 **See SQL Tables Documentation:** [Database information](database/database_models.md)
-![Database Model](database/database_model.png)
+![Database Model](back/database/database_model.png)
 
 
 ---
@@ -88,7 +88,7 @@ Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;
 - **Frontend:** React.js  
 
 👉 **Vezi documentatia tabelelor SQL:** [Informatii despre baza de date](database/database_models.md)
-![Database Model](database/database_model.png)
+![Database Model](back/database/database_model.png)
 
 ---
 
