@@ -4,11 +4,13 @@ import projectRoutes from './api/routes/projectRoutes.js';
 import bugRoutes from './api/routes/bugRoutes.js';
 import projectMemberRoutes from './api/routes/projectMemberRoutes.js';
 import dotenv from "dotenv";
+import cors from "cors";
 
 import authRoutes from './api/routes/authRoutes.js'; // AUTENTIFICARE
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 dotenv.config();
 
 app.use('/auth', authRoutes); //RUTA DE AUTENTIFICARE 
