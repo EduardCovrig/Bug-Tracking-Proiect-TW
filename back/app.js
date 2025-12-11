@@ -24,4 +24,4 @@ app.use('/members', projectMemberRoutes);
 
 const PORT = process.env.PORT || 3000; //ia port-ul din .env creat sau default 3000
 
-app.listen(3000, () => console.log(`Server is now running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
