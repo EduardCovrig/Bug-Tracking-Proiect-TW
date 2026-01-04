@@ -1,12 +1,22 @@
 import { ProjectRepository } from '../repositories/projectRepository.js'; //repo pentru a avea acces la baza de date.
+import { ProjectMemberRepository } from '../repositories/projectMemberRepository.js'; //repo pentru membrii proiectului
 
 export class ProjectService {
   constructor() {
     this.projectRepository = new ProjectRepository(); //facem instantan noua.
+    this.projectMemberRepository = new ProjectMemberRepository(); //pentru a avea acces la membrii proiectului
   }
 
   async createProject(data) { //creeaza proiect nou
-    return this.projectRepository.create(data); 
+    const newProject= this.projectRepository.create(data); 
+    await this.projectMemberRepository.create( 
+      {
+        id_user:data.created_by, //id-ul userului care a creat proiectul
+        id_project: newProject.id_project,
+        role:"PM"
+      }
+    )
+    return newProject;
   }
 
   async getAllProjects() { //ia toate proiectele

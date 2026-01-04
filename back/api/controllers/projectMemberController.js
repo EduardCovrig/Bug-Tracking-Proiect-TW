@@ -6,15 +6,18 @@ export class ProjectMemberController {
   
   async addMember(req, res) {
     try {
-      const { id_project } = req.body;
+      const { id_project, id_user, role } = req.body;
       const currentUserId = req.user.id_user; // ID-ul utilizatorului care face cererea
 
-      // 1. Verificare: Este utilizatorul care face cererea Project Manager pentru acest proiect?
-      const isPm = await projectMemberService.isProjectManager(currentUserId, id_project);
+      //1. Verificare: Daca utilizatorul vrea sa se adauge singur ca TST
+      const isSelfEnrollment = (currentUserId === id_user) && (role === 'TST');
       
-      if (!isPm) {// NU
-        return res.status(403).json({ error: 'Forbidden: Only Project Managers can add or modify members in a project.' });
-        //403 ACCESS FORBIDDEN
+      if (!isSelfEnrollment) {
+          // Daca nu e self-enrollment, verificam daca cel care face cererea e PM
+          const isPm = await projectMemberService.isProjectManager(currentUserId, id_project); 
+          if (!isPm) { //daca nu e pm, eroare!
+            return res.status(403).json({ error: 'Forbidden: Only Project Managers can add other members.' });
+          }
       }
 
       // 2. Daca e PM, continua
