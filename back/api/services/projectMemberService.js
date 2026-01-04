@@ -1,9 +1,11 @@
 import { ProjectMemberRepository } from '../repositories/projectMemberRepository.js';
+import { ProjectRepository } from '../repositories/projectRepository.js';
 // repository importat pentru a putea interactiona cu baza de date
 
 export class ProjectMemberService {
   constructor() {
     this.projectMemberRepository = new ProjectMemberRepository(); //facem instanta noua de repo
+    this.projectRepository = new ProjectRepository(); //pentru a avea acces la proiecte
   }
 
   async addMember(data) {
@@ -43,7 +45,19 @@ export class ProjectMemberService {
   }
 
   async removeMember({ id_user, id_project }) { //sterge un membru dintr-un proiect
+    // 1. Verificam existenta acelui membru in proiectul respectiv
     await this.getMember({ id_user, id_project }); 
-    return this.projectMemberRepository.delete(id_user, id_project);
+    
+    // 2. stergem membrul
+    await this.projectMemberRepository.delete(id_user, id_project);
+
+    // 3. verificam daca proiectul a ramas gol
+    const remainingMembers = await this.projectMemberRepository.findByProject(id_project);
+
+    // 4. daca a ramas gol, se sterge si proiectul
+    if (remainingMembers.length === 0) {
+        await this.projectRepository.delete(id_project);
+        console.log(`Project ${id_project} deleted because it became empty.`);
+    }
   }
 }
