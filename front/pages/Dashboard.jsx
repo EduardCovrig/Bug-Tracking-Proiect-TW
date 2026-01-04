@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { createPortal } from 'react-dom'; // pt a rezolva o eroare cu blurul pe fundal cand se apasa createProject
 import { api } from '../services/api.jsx';
 
 const Dashboard = () => {
@@ -92,8 +92,9 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      {/* MODAL CREARE PROIECT */}
+      {showCreateModal && createPortal(
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-8 transform transition-all">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-slate-900">New Project</h2>
@@ -139,7 +140,8 @@ const Dashboard = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body //locul unde se teleporteaza modalul facut cu createPortal
       )}
     </div>
   );

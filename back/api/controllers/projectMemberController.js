@@ -9,7 +9,7 @@ export class ProjectMemberController {
       const { id_project, id_user, role } = req.body;
       const currentUserId = req.user.id_user; // ID-ul utilizatorului care face cererea
 
-      //1. Verificare: Daca utilizatorul vrea sa se adauge singur ca TST
+      //1. Daca utilizatorul vrea sa se adauge singur ca TST (si nu vine cererea de la altceva din accesarea din backend din endpoint)
       const isSelfEnrollment = (currentUserId === id_user) && (role === 'TST');
       
       if (!isSelfEnrollment) {
@@ -87,14 +87,21 @@ export class ProjectMemberController {
       const { id_user, id_project } = req.params;
       const currentUserId = req.user.id_user; 
 
-      // 1. Verificare: Este utilizatorul care face cererea PM?
-      const isPm = await projectMemberService.isProjectManager(currentUserId, id_project); //verifica daca e
-      if (!isPm) {
-        return res.status(403).json({ error: 'Forbidden: Only Project Managers can remove members.' }); //403 FORBIDDEN daca nu e pM
+      // 1. self-leave: Daca userul vrea sa iasa singur
+      if (currentUserId === id_user) {
+          await projectMemberService.removeMember({ id_user, id_project });
+          return res.status(204).send(); //a iesit cu succes gata
       }
 
-      // 2. Daca este PM, continua
-      await projectMemberService.removeMember({ id_user, id_project }); //il sterge
+      // 2. KICK Daca cineva incearca sa stearga pe altcineva
+      // verificam daca cel care face cererea este PM
+      const isPm = await projectMemberService.isProjectManager(currentUserId, id_project);
+      
+      if (!isPm) {
+        return res.status(403).json({ error: 'Forbidden: Only Project Managers can remove other members.' });
+      }
+      // Daca ajunge aici e PM, deci are voie sa stearga pe oricine
+      await projectMemberService.removeMember({ id_user, id_project });
       res.status(204).send(); //daca e ok afiseaza json
     } catch (error) {
       res.status(400).json({ error: error.message }); //daca apare ceva eroare 400 BAD REQUEST

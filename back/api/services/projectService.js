@@ -8,7 +8,7 @@ export class ProjectService {
   }
 
   async createProject(data) { //creeaza proiect nou
-    const newProject= this.projectRepository.create(data); 
+    const newProject= await this.projectRepository.create(data); 
     await this.projectMemberRepository.create( 
       {
         id_user:data.created_by, //id-ul userului care a creat proiectul
