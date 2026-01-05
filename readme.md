@@ -19,20 +19,22 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 ![Database Model](back/database/database_model.png)
 
 --- 
+## 📷 Demo Images
 
 ### Project Member Interface
 ![Project Member Interface](demo-imgs/project-member-interface.png)
 
-### Project Tester Interface
-![Project Tester Interface](demo-imgs/project-tester-interface.png)
-
 ### Project Exploration
 ![Dashboard Interface](demo-imgs/dashboard-interface.png)
 
-### Project Member List & Bug Report Form & User Settings
-| Project Members List | Bug Report Form | Account Settings |
-| :---: | :---: | :---: |
-| ![Project Members](demo-imgs/project-members.png) | ![Bug Report](demo-imgs/bug-report.png) | ![Account Settings](demo-imgs/account-settings.png) |
+### Project Tester Interface
+![Project Tester Interface](demo-imgs/project-tester-interface.png)
+
+### Project Members List
+![Project Members List](demo-imgs/project-members.png)
+
+### Bug Report Modal
+![Project Bug Report Modal](demo-imgs/bug-report.png)
 
 ---
 ## 📁 Project Structure
@@ -133,22 +135,6 @@ Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;
 - Pentru instructiuni de rulare frontend: **[Click aici](front/README.md)**
 
 ---
-## 📷 Imagini Demo
-
-### Interfata Membru Proiect 
-![Project Member Interface](demo-imgs/project-member-interface.png)
-
-### Interfata Tester Proiect 
-![Project Tester Interface](demo-imgs/project-tester-interface.png)
-
-### Explorarea Proiectelor
-![Dashboard Interface](demo-imgs/dashboard-interface.png)
-
-### Lista membrilor din proiect & Bug Report Form & Setari Utilizator
-| Project Members List | Bug Report Form | Account Settings |
-| :---: | :---: | :---: |
-| ![Project Members](demo-imgs/project-members.png) | ![Bug Report](demo-imgs/bug-report.png) | ![Account Settings](demo-imgs/account-settings.png) |
----
 
 ## 🛠️ Tehnologii folosite
 - **Backend:** Node.js, Express.js, JWT pentru autentificare  
@@ -157,6 +143,24 @@ Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;
 
 👉 **Vezi documentatia tabelelor SQL:** [Informatii despre baza de date](back/database/database_models.md)
 ![Database Model](back/database/database_model.png)
+
+---
+## 📷 Demo Images
+
+### Project Member Interface
+![Project Member Interface](demo-imgs/project-member-interface.png)
+
+### Project Exploration
+![Dashboard Interface](demo-imgs/dashboard-interface.png)
+
+### Project Tester Interface
+![Project Tester Interface](demo-imgs/project-tester-interface.png)
+
+### Project Members List
+![Project Members List](demo-imgs/project-members.png)
+
+### Bug Report Modal
+![Project Bug Report Modal](demo-imgs/bug-report.png)
 
 ---
 
