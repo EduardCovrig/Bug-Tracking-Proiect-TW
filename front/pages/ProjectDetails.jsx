@@ -8,18 +8,15 @@ const ProjectDetails = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  // State-uri
   const [project, setProject] = useState(null);
   const [members, setMembers] = useState([]);
   const [bugs, setBugs] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // UI State
   const [activeTab, setActiveTab] = useState('bugs');
   const [showBugForm, setShowBugForm] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);
   
-  // Form Data
   const [bugData, setBugData] = useState({
     description: '', severity: 'low', priority: 'low', commit_link: '', id_project: id
   });
@@ -50,14 +47,17 @@ const ProjectDetails = () => {
     }
   };
 
-  // --- LOGICA ROLURI ---
+  // --- LOGICA ROLURI & STARE PROIECT ---
   const currentMemberRecord = members.find(m => m.id_user === user.id_user);
   const isMember = !!currentMemberRecord;
   const isPm = currentMemberRecord?.role === 'PM';
   const isTester = currentMemberRecord?.role === 'TST';
   
-  // Verificam daca este ULTIMUL membru din proiect
   const isLastMember = isMember && members.length === 1;
+
+  // VERIFICARE DACA PROIECTUL E ARHIVAT (Nu mai are niciun PM)
+  const hasActivePm = members.some(m => m.role === 'PM');
+  const isArchived = members.length > 0 && !hasActivePm;
 
   // --- ACTIUNI DE GESTIUNE MEMBRI ---
 
@@ -68,30 +68,29 @@ const ProjectDetails = () => {
     } catch(e) { alert(e.message); }
   };
 
-  // Aceasta functie gestioneaza si LEAVE (normal) si DELETE (cand esti ultimul)
-  // Backend-ul sterge automat proiectul daca ramai cu 0 membri.
   const handleLeaveOrDeleteAsLast = async () => {
     let message = "Are you sure you want to leave this project?";
     
+    // Daca esti singurul membru (implicit si singurul PM daca e cazul)
     if (isLastMember) {
-        message = "⚠️ WARNING: You are the LAST member of this project!\n\nIf you leave, the project will be PERMANENTLY DELETED.\n\nAre you sure you want to delete this project?";
+        message = "WARNING: You are the LAST member!\n\nIf you leave, the project will be PERMANENTLY DELETED.\n\nProceed?";
+    } 
+    // Daca esti ultimul PM dar mai sunt testeri -> Proiectul devine ARHIVAT
+    else if (isPm && members.filter(m => m.role === 'PM').length === 1) {
+        message = "WARNING: You are the LAST Project Member (PM)!\n\nIf you leave, this project will become ARCHIVED (READ-ONLY) and no one will be able to manage it.\n\nAre you sure?";
     }
 
     if(!window.confirm(message)) return;
 
     try {
       await api.delete(`/members/${user.id_user}/${id}`);
-      // Daca a fost ultimul membru, proiectul e sters, deci mergem la dashboard
       navigate('/'); 
     } catch(e) { 
-        // Daca inca exista proiectul (nu erai ultimul), facem refresh
-        // Daca s-a sters si da 404 la refresh, catch-ul din fetchData ne duce la dashboard oricum.
         fetchData(); 
         if (isLastMember) navigate('/');
     }
   };
 
-  // PM: Sterge un membru specific
   const handleRemoveMember = async (targetUserId) => {
     if(!window.confirm("Are you sure you want to remove this member?")) return;
     try {
@@ -100,26 +99,29 @@ const ProjectDetails = () => {
     } catch(e) { alert(e.message); }
   };
 
-  // PM: Promoveaza Tester la PM
   const handlePromote = async (targetUserId) => {
+    const confirmMsg = "CAUTION: Promoting a member to Project Member (PM) grants them FULL CONTROL.\n\n" +
+                       "They will have EQUAL POWERS to you, including the ability to:\n" +
+                       "• Remove YOU from the project\n" +
+                       "• DELETE the project permanently\n\n" +
+                       "Are you sure you want to proceed?";
+    if (!window.confirm(confirmMsg)) return;
     try {
       await api.put(`/members/${targetUserId}/${id}`, { role: 'PM' });
       fetchData();
     } catch(e) { alert(e.message); }
   };
 
-  // PM: Retrogradeaza PM la Tester
   const handleDemote = async (targetUserId) => {
-    if(!window.confirm("Demote this Project Manager to Tester?")) return;
+    if(!window.confirm("Demote this Project Member to Tester?")) return;
     try {
       await api.put(`/members/${targetUserId}/${id}`, { role: 'TST' });
       fetchData();
     } catch(e) { alert(e.message); }
   };
 
-  // PM: Sterge Proiectul Explicit (Kick all)
   const handleDeleteProject = async () => {
-    const confirmMsg = `⚠️ DANGER ZONE ⚠️\n\nThis will DELETE the project "${project.name}" and remove all ${members.length} members.\n\nThis action cannot be undone. Are you sure?`;
+    const confirmMsg = `\nThis will DELETE the project "${project.name}" and remove all ${members.length} members.\n\nThis action cannot be undone. Are you sure?`;
     if (window.confirm(confirmMsg)) {
       try {
         await api.delete(`/projects/${id}`);
@@ -177,14 +179,21 @@ const ProjectDetails = () => {
   return (
     <div className="space-y-6">
       {/* HEADER */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
+      <div className={`rounded-3xl p-8 shadow-sm border ${isArchived ? 'bg-red-50 border-red-200' : 'bg-white border-slate-200'}`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="p-4 bg-blue-600 rounded-2xl text-white shadow-lg">
-              <i className="fa-solid fa-code text-2xl"></i>
+            <div className={`p-4 rounded-2xl text-white shadow-lg ${isArchived ? 'bg-slate-500' : 'bg-blue-600'}`}>
+              <i className={`fa-solid ${isArchived ? 'fa-archive' : 'fa-code'} text-2xl`}></i>
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-slate-900">{project.name}</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl font-extrabold text-slate-900">{project.name}</h1>
+                {isArchived && (
+                    <span className="px-3 py-1 bg-red-600 text-white text-xs font-black tracking-widest rounded-full uppercase">
+                        Archived (Closed)
+                    </span>
+                )}
+              </div>
               <a href={project.repository} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline text-sm flex items-center gap-1">
                 <i className="fa-brands fa-github"></i>
                 {project.repository}
@@ -193,8 +202,8 @@ const ProjectDetails = () => {
           </div>
           
           <div className="flex gap-3">
-            {/* Buton JOIN pentru cei noi */}
-            {!isMember && (
+            {/* Buton JOIN - Doar daca NU e arhivat */}
+            {!isMember && !isArchived && (
               <button 
                 onClick={handleJoinProject}
                 className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-all text-sm shadow-md shadow-blue-200"
@@ -206,7 +215,16 @@ const ProjectDetails = () => {
             {/* LOGICA BUTOANE MEMBRI */}
             {isMember && (
                 <>
-                    {/* SCENARIUL 1: Esti ultimul membru -> Buton DELETE PROJECT (care face leave+autodelete) */}
+                    {/* Badge Rol Utilizator Curent - Aici ramane textul lung */}
+                    <div className={`px-5 py-2.5 rounded-xl font-bold text-sm border flex items-center gap-2 ${
+                        isPm 
+                        ? 'bg-indigo-50 text-indigo-700 border-indigo-100' 
+                        : 'bg-teal-50 text-teal-700 border-teal-100'
+                    }`}>
+                        <i className={`fa-solid ${isPm ? 'fa-user-shield' : 'fa-microscope'}`}></i>
+                        {isPm ? 'Project Member' : 'Tester'}
+                    </div>
+
                     {isLastMember ? (
                         <button 
                             onClick={handleLeaveOrDeleteAsLast}
@@ -215,7 +233,6 @@ const ProjectDetails = () => {
                             Delete Project
                         </button>
                     ) : (
-                        // SCENARIUL 2: Nu esti ultimul -> Buton LEAVE normal
                         <button 
                             onClick={handleLeaveOrDeleteAsLast}
                             className="bg-orange-50 text-orange-600 px-5 py-2.5 rounded-xl font-bold hover:bg-orange-100 transition-all text-sm"
@@ -224,7 +241,6 @@ const ProjectDetails = () => {
                         </button>
                     )}
 
-                    {/* SCENARIUL 3: Esti PM si NU esti singur -> Buton DELETE PROJECT (explicit, kick all) */}
                     {isPm && !isLastMember && (
                         <button 
                             onClick={handleDeleteProject} 
@@ -234,13 +250,6 @@ const ProjectDetails = () => {
                         </button>
                     )}
                 </>
-            )}
-
-            {/* Eticheta PM (informativa) */}
-            {isPm && (
-               <div className="px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-xl font-bold text-sm border border-indigo-100 flex items-center gap-2">
-                 <i className="fa-solid fa-user-shield"></i> Manager
-               </div>
             )}
           </div>
         </div>
@@ -270,8 +279,9 @@ const ProjectDetails = () => {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold text-slate-800">Issue Tracker</h2>
-            {/* DOAR TESTERII RAPORTEAZA */}
-            {isTester && (
+            
+            {/* DOAR TESTERII RAPORTEAZA si DOAR DACA NU E ARHIVAT */}
+            {isTester && !isArchived && (
               <button
                 onClick={() => setShowBugForm(true)}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 text-sm shadow-md"
@@ -328,8 +338,8 @@ const ProjectDetails = () => {
                       )}
                     </div>
                   </div>
-                  {/* ACTIUNI BUG (DOAR PM) */}
-                  {isPm && bug.status !== 'resolved' && bug.status !== 'closed' && (
+                  {/* ACTIUNI BUG (DOAR PM) si DOAR DACA NU E ARHIVAT */}
+                  {isPm && !isArchived && bug.status !== 'resolved' && bug.status !== 'closed' && (
                     <div className="flex flex-col gap-2 min-w-[140px]">
                       {!bug.assigned_to && (
                         <button onClick={() => handleAssignToMe(bug.id_bug)} className="text-xs font-bold text-slate-600 hover:bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 transition-all flex items-center justify-center gap-2">
@@ -366,16 +376,18 @@ const ProjectDetails = () => {
                     <p className="text-xs text-slate-400">{m.user?.email}</p>
                   </div>
                 </div>
-                <span className={`px-2 py-1 rounded text-[10px] font-black tracking-widest ${m.role === 'PM' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'}`}>
+                {/* AICI AM MODIFICAT: AFISAM DOAR PM SAU TST */}
+                <span className={`px-2 py-1 rounded-lg text-[10px] font-bold tracking-wide uppercase ${
+                    m.role === 'PM' ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700'
+                }`}>
                   {m.role}
                 </span>
               </div>
 
-              {/* BUTOANE ADMINISTRARE - VIZIBILE DOAR PENTRU PM */}
-              {isPm && m.id_user !== user.id_user && (
+              {/* BUTOANE ADMINISTRARE - VIZIBILE DOAR PENTRU PM (si daca nu e arhivat) */}
+              {isPm && !isArchived && m.id_user !== user.id_user && (
                 <div className="flex gap-2 pt-3 border-t border-slate-50">
                   
-                  {/* Buton de Promovare (pt Testeri) */}
                   {m.role === 'TST' && (
                     <button 
                       onClick={() => handlePromote(m.id_user)}
@@ -385,7 +397,6 @@ const ProjectDetails = () => {
                     </button>
                   )}
 
-                  {/* Buton de Retrogradare (pt alti PM) */}
                   {m.role === 'PM' && (
                     <button 
                       onClick={() => handleDemote(m.id_user)}
@@ -395,7 +406,6 @@ const ProjectDetails = () => {
                     </button>
                   )}
 
-                  {/* Buton de Stergere (pt Oricine) */}
                   <button 
                     onClick={() => handleRemoveMember(m.id_user)}
                     className="flex-1 text-[10px] font-bold bg-red-50 text-red-600 py-2 rounded-lg hover:bg-red-100 transition-colors"
@@ -411,7 +421,7 @@ const ProjectDetails = () => {
 
       {/* MODAL REPORT BUG */}
       {showBugForm && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-8 transform transition-all">
             <h2 className="text-2xl font-bold mb-6 text-slate-800">Report a Bug</h2>
             <form onSubmit={handleReportBug} className="space-y-4">
