@@ -6,7 +6,7 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 
 ## 📘 Documentation Links
 - For backend run instructions: **[Click here](back/readme.md)**
-- For frontend run instructions: **[Click here](front/README.md)**
+- For frontend run instructions: **[Click here](front/readme.md)**
 
 ---
 
@@ -18,16 +18,73 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 👉 **See SQL Tables Documentation:** [Database information](back/database/database_models.md)
 ![Database Model](back/database/database_model.png)
 
+--- 
+
+## 📷 Demo Images
+
+### Project Exploration
+![Dashboard Interface](demo-imgs/dashboard-interface.png)
+
+### Project Management
+| Project Members | Project Member Interface |
+| :---: | :---: |
+| ![Project Members](demo-imgs/project-members.png) | ![Project Member Interface](demo-imgs/project-member-interface.png) |
+
+### Testing & Bugs
+| Tester Interface | Bug Report |
+| :---: | :---: |
+| ![Project Tester Interface](demo-imgs/project-tester-interface.png) | ![Bug Report](demo-imgs/bug-report.png) |
+
+### User Settings
+![Account Settings](demo-imgs/account-settings.png)
 
 ---
 
 ## 📁 Project Structure
 
-The project is organized into **two main folders**:
+The project is organized into **two main folders**: `back` (API & Database) and `front` (User Interface).
 
-- **back**  → REST API & Database  
-- **front** → User Interface  
-
+```text
+.
+├── readme.md
+├── demo-imgs/
+├── back/
+│   ├── readme.md
+│   ├── app.js
+│   ├── package.json
+│   ├── .env.example
+│   ├── api/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── repositories/
+│   │   ├── routes/
+│   │   └── services/
+│   └── database/
+│       ├── database_models.md
+│       ├── prismaclient.js
+│       └── prisma/
+│           ├── schema.prisma
+│           ├── migrations/
+│           └── seeds/
+└── front/
+    ├── README.md
+    ├── App.jsx
+    ├── index.html
+    ├── package.json
+    ├── components/
+    │   └── Sidebar.jsx
+    ├── context/
+    │   └── AuthContext.jsx
+    ├── pages/
+    │   ├── Dashboard.jsx
+    │   ├── Login.jsx
+    │   ├── MyBugs.jsx
+    │   ├── Profile.jsx
+    │   ├── ProjectDetails.jsx
+    │   └── Register.jsx
+    └── services/
+        └── api.jsx
+```
 ---
 
 ## 📝 Project Plan
@@ -78,7 +135,26 @@ Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;
 
 ## 📘 Link-uri Documentatie
 - Pentru instructiuni de rulare backend: **[Click aici](back/readme.md)**
-- Pentru instructiuni de rulare frontend: **INCA NEIMPLEMENTAT**
+- Pentru instructiuni de rulare frontend: **[Click aici](front/readme.md)**
+
+---
+## 📷 Imagini Demo
+
+### Explorarea proiectelor
+![Dashboard Interface](demo-imgs/dashboard-interface.png)
+
+### Managementul Proiectului
+| Project Members | Project Member Interface |
+| :---: | :---: |
+| ![Project Members](demo-imgs/project-members.png) | ![Project Member Interface](demo-imgs/project-member-interface.png) |
+
+### Testare si Raportare Buguri
+| Tester Interface | Bug Report |
+| :---: | :---: |
+| ![Project Tester Interface](demo-imgs/project-tester-interface.png) | ![Bug Report](demo-imgs/bug-report.png) |
+
+### Setari Utilizator
+![Account Settings](demo-imgs/account-settings.png)
 
 ---
 
@@ -94,10 +170,49 @@ Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;
 
 ## 📁 Structura Proiectului
 
-Proiectul este organizat in **doua foldere principale**:
+Proiectul este organizat in **doua foldere principale**: `back` (API si baza de date) si `front` (Interfata utilizator).
 
-- **back**  → REST API si baza de date  
-- **front** → Interfata utilizator  
+```text
+.
+├── readme.md
+├── demo-imgs/
+├── back/
+│   ├── readme.md
+│   ├── app.js
+│   ├── package.json
+│   ├── .env.example
+│   ├── api/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── repositories/
+│   │   ├── routes/
+│   │   └── services/
+│   └── database/
+│       ├── database_models.md
+│       ├── prismaclient.js
+│       └── prisma/
+│           ├── schema.prisma
+│           ├── migrations/
+│           └── seeds/
+└── front/
+    ├── README.md
+    ├── App.jsx
+    ├── index.html
+    ├── package.json
+    ├── components/
+    │   └── Sidebar.jsx
+    ├── context/
+    │   └── AuthContext.jsx
+    ├── pages/
+    │   ├── Dashboard.jsx
+    │   ├── Login.jsx
+    │   ├── MyBugs.jsx
+    │   ├── Profile.jsx
+    │   ├── ProjectDetails.jsx
+    │   └── Register.jsx
+    └── services/
+        └── api.jsx
+```
 ---
 
 ## 📝 Plan Proiect

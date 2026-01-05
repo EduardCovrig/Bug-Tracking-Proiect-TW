@@ -1,5 +1,4 @@
-
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'http://localhost:3000'; // Asigura-te ca portul raspunde cu cel din back-end.
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');
