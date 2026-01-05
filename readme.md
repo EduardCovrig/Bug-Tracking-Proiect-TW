@@ -6,7 +6,7 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 
 ## 📘 Documentation Links
 - For backend run instructions: **[Click here](back/readme.md)**
-- For frontend run instructions: **NOT YET IMPLEMENTED**
+- For frontend run instructions: **[Click here](front/README.md)**
 
 ---
 
