@@ -6,7 +6,7 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 
 ## 📘 Documentation Links
 - For backend run instructions: **[Click here](back/readme.md)**
-- For frontend run instructions: **[Click here](front/readme.md)**
+- For frontend run instructions: **[Click here](front/README.md)**
 
 ---
 
@@ -20,26 +20,21 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 
 --- 
 
-## 📷 Demo Images
+### Project Member Interface
+![Project Member Interface](demo-imgs/project-member-interface.png)
+
+### Project Tester Interface
+![Project Tester Interface](demo-imgs/project-tester-interface.png)
 
 ### Project Exploration
 ![Dashboard Interface](demo-imgs/dashboard-interface.png)
 
-### Project Management
-| Project Members | Project Member Interface |
-| :---: | :---: |
-| ![Project Members](demo-imgs/project-members.png) | ![Project Member Interface](demo-imgs/project-member-interface.png) |
-
-### Testing & Bugs
-| Tester Interface | Bug Report |
-| :---: | :---: |
-| ![Project Tester Interface](demo-imgs/project-tester-interface.png) | ![Bug Report](demo-imgs/bug-report.png) |
-
-### User Settings
-![Account Settings](demo-imgs/account-settings.png)
+### Project Member List & Bug Report Form & User Settings
+| Project Members List | Bug Report Form | Account Settings |
+| :---: | :---: | :---: |
+| ![Project Members](demo-imgs/project-members.png) | ![Bug Report](demo-imgs/bug-report.png) | ![Account Settings](demo-imgs/account-settings.png) |
 
 ---
-
 ## 📁 Project Structure
 
 The project is organized into **two main folders**: `back` (API & Database) and `front` (User Interface).
@@ -135,27 +130,24 @@ Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;
 
 ## 📘 Link-uri Documentatie
 - Pentru instructiuni de rulare backend: **[Click aici](back/readme.md)**
-- Pentru instructiuni de rulare frontend: **[Click aici](front/readme.md)**
+- Pentru instructiuni de rulare frontend: **[Click aici](front/README.md)**
 
 ---
 ## 📷 Imagini Demo
 
-### Explorarea proiectelor
+### Interfata Membru Proiect 
+![Project Member Interface](demo-imgs/project-member-interface.png)
+
+### Interfata Tester Proiect 
+![Project Tester Interface](demo-imgs/project-tester-interface.png)
+
+### Explorarea Proiectelor
 ![Dashboard Interface](demo-imgs/dashboard-interface.png)
 
-### Managementul Proiectului
-| Project Members | Project Member Interface |
-| :---: | :---: |
-| ![Project Members](demo-imgs/project-members.png) | ![Project Member Interface](demo-imgs/project-member-interface.png) |
-
-### Testare si Raportare Buguri
-| Tester Interface | Bug Report |
-| :---: | :---: |
-| ![Project Tester Interface](demo-imgs/project-tester-interface.png) | ![Bug Report](demo-imgs/bug-report.png) |
-
-### Setari Utilizator
-![Account Settings](demo-imgs/account-settings.png)
-
+### Lista membrilor din proiect & Bug Report Form & Setari Utilizator
+| Project Members List | Bug Report Form | Account Settings |
+| :---: | :---: | :---: |
+| ![Project Members](demo-imgs/project-members.png) | ![Bug Report](demo-imgs/bug-report.png) | ![Account Settings](demo-imgs/account-settings.png) |
 ---
 
 ## 🛠️ Tehnologii folosite
