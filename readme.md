@@ -24,7 +24,7 @@ This project was created by   <span style="color: #2CBCB2; font-weight: bold;">C
 ### Project Member Interface
 ![Project Member Interface](demo-imgs/project-member-interface.png)
 
-### Project Exploration
+### Projects Exploration
 ![Dashboard Interface](demo-imgs/dashboard-interface.png)
 
 ### Project Tester Interface
@@ -145,21 +145,21 @@ Acest proiect a fost realizat de <span style="color: #2CBCB2; font-weight: bold;
 ![Database Model](back/database/database_model.png)
 
 ---
-## 📷 Demo Images
+## 📷 Imagini Demo
 
-### Project Member Interface
+### Interfata membrilor din proiect
 ![Project Member Interface](demo-imgs/project-member-interface.png)
 
-### Project Exploration
+### Explorarea proiectelor
 ![Dashboard Interface](demo-imgs/dashboard-interface.png)
 
-### Project Tester Interface
+### Interfata testerilor proiectului
 ![Project Tester Interface](demo-imgs/project-tester-interface.png)
 
-### Project Members List
+### Lista membrilor din proiect
 ![Project Members List](demo-imgs/project-members.png)
 
-### Bug Report Modal
+### Formularul de raportare bug
 ![Project Bug Report Modal](demo-imgs/bug-report.png)
 
 ---
