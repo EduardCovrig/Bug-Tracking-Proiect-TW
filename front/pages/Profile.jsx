@@ -1,15 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../services/api.jsx';
 
 const Profile = () => {
+  // Luam datele curente si functia de update din Context
   const { user, login } = useAuth();
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
+    // Cand pagina se incarca si avem userul, pre-completam formularul cu datele existente
     if (user) setFormData({ username: user.username, email: user.email, password: '' });
   }, [user]);
 
@@ -18,12 +19,19 @@ const Profile = () => {
     setLoading(true);
     setSuccess('');
     try {
+      // Pregatim datele pentru trimitere
       const updateData = { username: formData.username, email: formData.email };
+      // Adaugam parola la request DOAR daca utilizatorul a scris ceva in camp (nu vrem sa o resetam daca e goala)
       if (formData.password) updateData.password = formData.password;
       
+      // Trimitem cererea de tip PUT catre backend
       const updatedUser = await api.put(`/users/${user.id_user}`, updateData);
+      
+      //Actualizam datele si in Contextul aplicatiei ca sa se vada modificarile instant in toata pagina
       login(updatedUser, localStorage.getItem('token'));
+      
       setSuccess('Profile updated successfully!');
+      // Resetam campul de parola dupa salvare pentru securitate
       setFormData(prev => ({ ...prev, password: '' }));
     } catch (err) {
       alert(err.message);
@@ -38,6 +46,7 @@ const Profile = () => {
       
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
         <div className="flex items-center gap-6 mb-8">
+          {/* Avatar generat automat din prima litera a username-ului */}
           <div className="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl text-blue-600 font-bold border-2 border-blue-50">
             {user?.username?.charAt(0)}
           </div>
@@ -47,6 +56,7 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Mesaj de succes care apare doar dupa salvare */}
         {success && (
           <div className="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg flex items-center gap-3">
             <i className="fa-solid fa-circle-check text-green-500"></i>

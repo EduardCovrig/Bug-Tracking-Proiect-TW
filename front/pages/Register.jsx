@@ -1,22 +1,29 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api.jsx';
 
 const Register = () => {
+  // Stare pentru datele formularului - initial goale
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  // Stare pentru erori
   const [error, setError] = useState('');
+  // Stare pentru a dezactiva butonul cat timp se incarca
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Previne reincarcarea paginii
     setError('');
     setLoading(true);
     try {
+      // Trimitem cererea de inregistrare catre server
+      // Se creaza utilizatorul in baza de date
       await api.post('/auth/register', formData);
+      
+      // Daca totul e OK, redirectionam utilizatorul catre pagina de Login
       navigate('/login');
     } catch (err) {
+      // Afisam mesajul de eroare
       setError(err.message || 'Registration failed');
     } finally {
       setLoading(false);
@@ -34,6 +41,7 @@ const Register = () => {
           <p className="text-slate-500 mt-2">Join the bug research community</p>
         </div>
 
+        {/* Zona de afisare a erorilor*/}
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
             <p className="text-sm text-red-700">{error}</p>

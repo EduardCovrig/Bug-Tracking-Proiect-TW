@@ -1,28 +1,30 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { api } from '../services/api.jsx';
 
 const Login = () => {
+  // Starea pentru datele din input-uri, erori si loading
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  
+  const { login } = useAuth(); // Luam functia login din Context pentru a salva sesiunea
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+    e.preventDefault(); // Prevenim refresh-ul standard al paginii
+    setError(''); // Resetam erorile vechi
+    setLoading(true); // Pornim spinner-ul
+    
     try {
-      const response = await api.post('/auth/login', formData);
-      login(response.user, response.token);
-      navigate('/');
+      const response = await api.post('/auth/login', formData); // Trimitem datele la backend
+      login(response.user, response.token); 
+      navigate('/'); // Redirectionam utilizatorul catre Dashboard
     } catch (err) {
-      setError(err.message || 'Invalid email or password');
+      setError(err.message || 'Invalid email or password'); // Afisam eroarea primita
     } finally {
-      setLoading(false);
+      setLoading(false); // Oprim spinner-ul indiferent de rezultat
     }
   };
 
@@ -37,6 +39,7 @@ const Login = () => {
           <p className="text-slate-500 mt-2">Sign in to manage your software projects</p>
         </div>
 
+        {/* Randare conditionala: Afisam cutia rosie doar daca exista o eroare */}
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
             <div className="flex items-center">
@@ -57,6 +60,7 @@ const Login = () => {
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                 placeholder="you@example.com"
                 value={formData.email}
+                // Actualizam starea pastrand restul obiectului neschimbat
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
@@ -79,9 +83,10 @@ const Login = () => {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading} // Dezactivam butonul cat timp se incarca sa nu apese de 2 ori
             className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
+            {/* Schimbam iconita dinamic: spinner daca incarca, sageata daca nu */}
             {loading ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-solid fa-right-to-bracket"></i>}
             Sign In
           </button>

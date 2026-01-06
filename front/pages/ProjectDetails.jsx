@@ -4,19 +4,22 @@ import { api } from '../services/api.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const ProjectDetails = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Luam ID-ul proiectului din URL
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useAuth(); // Userul logat
   
+  // Stari pentru datele proiectului
   const [project, setProject] = useState(null);
   const [members, setMembers] = useState([]);
   const [bugs, setBugs] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  // Stari pentru interfata utilizator
   const [activeTab, setActiveTab] = useState('bugs');
   const [showBugForm, setShowBugForm] = useState(false);
   const [showResolveModal, setShowResolveModal] = useState(false);
   
+  // Stari pentru formulare (raportare bug si rezolvare bug)
   const [bugData, setBugData] = useState({
     description: '', severity: 'low', priority: 'low', commit_link: '', id_project: id
   });
@@ -31,6 +34,7 @@ const ProjectDetails = () => {
 
   const fetchData = async () => {
     try {
+      //Folosim Promise.all pentru a cere toate datele in paralel
       const [proj, mbars, allBugs] = await Promise.all([
         api.get(`/projects/${id}`),
         api.get(`/members/project/${id}`),
@@ -38,24 +42,31 @@ const ProjectDetails = () => {
       ]);
       setProject(proj);
       setMembers(mbars);
+      // Filtram bug-urile local pentru acest proiect
       setBugs(allBugs.filter(b => b.id_project === id));
     } catch (err) {
       console.error(err);
-      navigate('/');
+      navigate('/'); // Daca proiectul nu exista, mergem la Dashboard
     } finally {
       setLoading(false);
     }
   };
 
-  // --- LOGICA ROLURI & STARE PROIECT ---
+  // --- LOGICA ROLURI & STARE PROIECT---
+  
+  // Verificam daca userul curent este membru in acest proiect
   const currentMemberRecord = members.find(m => m.id_user === user.id_user);
   const isMember = !!currentMemberRecord;
+  
+  // Verificam rolurile specifice
   const isPm = currentMemberRecord?.role === 'PM';
   const isTester = currentMemberRecord?.role === 'TST';
   
+  // Verificam daca este singurul membru ramas in proiect
   const isLastMember = isMember && members.length === 1;
 
   // VERIFICARE DACA PROIECTUL E ARHIVAT (Nu mai are niciun PM)
+  // Un proiect fara PM devine arhivat
   const hasActivePm = members.some(m => m.role === 'PM');
   const isArchived = members.length > 0 && !hasActivePm;
 
@@ -63,6 +74,7 @@ const ProjectDetails = () => {
 
   const handleJoinProject = async () => {
     try {
+      // Implicit oricine intra primeste rolul de Tester (TST)
       await api.post('/members', { id_project: id, id_user: user.id_user, role: 'TST' });
       fetchData();
     } catch(e) { alert(e.message); }
@@ -71,11 +83,11 @@ const ProjectDetails = () => {
   const handleLeaveOrDeleteAsLast = async () => {
     let message = "Are you sure you want to leave this project?";
     
-    // Daca esti singurul membru (implicit si singurul PM daca e cazul)
+    //Daca esti ultimul om -> Proiectul se sterge de tot
     if (isLastMember) {
         message = "WARNING: You are the LAST member!\n\nIf you leave, the project will be PERMANENTLY DELETED.\n\nProceed?";
     } 
-    // Daca esti ultimul PM dar mai sunt testeri -> Proiectul devine ARHIVAT
+    //Daca esti ultimul PM dar mai sunt testeri -> Proiectul devine Arhivat
     else if (isPm && members.filter(m => m.role === 'PM').length === 1) {
         message = "WARNING: You are the LAST Project Member (PM)!\n\nIf you leave, this project will become ARCHIVED (READ-ONLY) and no one will be able to manage it.\n\nAre you sure?";
     }
@@ -91,6 +103,7 @@ const ProjectDetails = () => {
     }
   };
 
+  // Functii administrative (doar pentru PM)
   const handleRemoveMember = async (targetUserId) => {
     if(!window.confirm("Are you sure you want to remove this member?")) return;
     try {
@@ -101,9 +114,6 @@ const ProjectDetails = () => {
 
   const handlePromote = async (targetUserId) => {
     const confirmMsg = "CAUTION: Promoting a member to Project Member (PM) grants them FULL CONTROL.\n\n" +
-                       "They will have EQUAL POWERS to you, including the ability to:\n" +
-                       "• Remove YOU from the project\n" +
-                       "• DELETE the project permanently\n\n" +
                        "Are you sure you want to proceed?";
     if (!window.confirm(confirmMsg)) return;
     try {
@@ -136,11 +146,13 @@ const ProjectDetails = () => {
     try {
       await api.post('/bugs', bugData);
       setShowBugForm(false);
+      // Resetam formularul
       setBugData({ description: '', severity: 'low', priority: 'low', commit_link: '', id_project: id });
       fetchData();
     } catch (err) { alert(err.message); }
   };
 
+  // Un PM isi asuma responsabilitatea pentru un bug
   const handleAssignToMe = async (bugId) => {
     try {
       await api.put(`/bugs/${bugId}`, { assigned_to: user.id_user, status: 'in_progress' });
@@ -153,6 +165,7 @@ const ProjectDetails = () => {
     setShowResolveModal(true);
   };
 
+  // Marcarea bug-ului ca rezolvat necesita un commit link
   const handleResolveBug = async (e) => {
     e.preventDefault();
     try {
@@ -165,6 +178,7 @@ const ProjectDetails = () => {
     } catch (err) { alert(err.message); }
   };
 
+  // Helper pentru culorile etichetelor
   const getSeverityColor = (s) => {
     switch(s) {
       case 'critical': return 'bg-red-500';
@@ -178,7 +192,8 @@ const ProjectDetails = () => {
 
   return (
     <div className="space-y-6">
-      {/* HEADER */}
+      {/* HEADER PROIECT */}
+      {/* Afisare vizuala diferita daca proiectul e Arhivat (fundal rosu deschis) */}
       <div className={`rounded-3xl p-8 shadow-sm border ${isArchived ? 'bg-red-50 border-red-200' : 'bg-white border-slate-200'}`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
@@ -202,7 +217,7 @@ const ProjectDetails = () => {
           </div>
           
           <div className="flex gap-3">
-            {/* Buton JOIN - Doar daca NU e arhivat */}
+            {/* Buton JOIN - Apare doar daca NU esti membru si proiectul NU e arhivat */}
             {!isMember && !isArchived && (
               <button 
                 onClick={handleJoinProject}
@@ -215,7 +230,7 @@ const ProjectDetails = () => {
             {/* LOGICA BUTOANE MEMBRI */}
             {isMember && (
                 <>
-                    {/* Badge Rol Utilizator Curent - Aici ramane textul lung */}
+                    {/* Badge Rol Utilizator Curent */}
                     <div className={`px-5 py-2.5 rounded-xl font-bold text-sm border flex items-center gap-2 ${
                         isPm 
                         ? 'bg-indigo-50 text-indigo-700 border-indigo-100' 
@@ -225,6 +240,7 @@ const ProjectDetails = () => {
                         {isPm ? 'Project Member' : 'Tester'}
                     </div>
 
+                    {/* Buton Leave / Delete in functie de cati membri au ramas */}
                     {isLastMember ? (
                         <button 
                             onClick={handleLeaveOrDeleteAsLast}
@@ -241,6 +257,7 @@ const ProjectDetails = () => {
                         </button>
                     )}
 
+                    {/* Buton stergere explicita doar pentru PM care nu e singur */}
                     {isPm && !isLastMember && (
                         <button 
                             onClick={handleDeleteProject} 
@@ -258,7 +275,7 @@ const ProjectDetails = () => {
         </p>
       </div>
 
-      {/* TABS */}
+      {/* TABS Navigation */}
       <div className="flex border-b border-slate-200 gap-8 px-2">
         <button
           onClick={() => setActiveTab('bugs')}
@@ -274,13 +291,13 @@ const ProjectDetails = () => {
         </button>
       </div>
 
-      {/* BUG LIST SECTION */}
+      {/* SECTIUNE LISTA BUG-URI */}
       {activeTab === 'bugs' && (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold text-slate-800">Issue Tracker</h2>
             
-            {/* DOAR TESTERII RAPORTEAZA si DOAR DACA NU E ARHIVAT */}
+            {/* Buton Raportare: DOAR TESTERII RAPORTEAZA si DOAR DACA NU E ARHIVAT */}
             {isTester && !isArchived && (
               <button
                 onClick={() => setShowBugForm(true)}
@@ -294,6 +311,7 @@ const ProjectDetails = () => {
 
           <div className="grid gap-4">
             {bugs.length === 0 ? (
+              // Empty State
               <div className="bg-white p-12 text-center rounded-3xl border border-dashed border-slate-300">
                 <i className="fa-solid fa-check-circle text-4xl text-green-400 mb-2"></i>
                 <p className="text-slate-500 font-medium">No bugs reported yet.</p>
@@ -302,6 +320,7 @@ const ProjectDetails = () => {
               bugs.map((bug) => (
                 <div key={bug.id_bug} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-4">
                   <div className="flex-1">
+                    {/* Header Bug: Severitate, ID, Status */}
                     <div className="flex items-center gap-3 mb-2">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase text-white ${getSeverityColor(bug.severity)}`}>
                         {bug.severity}
@@ -315,6 +334,8 @@ const ProjectDetails = () => {
                       </span>
                     </div>
                     <p className="text-slate-800 font-medium mb-3">{bug.description}</p>
+                    
+                    {/* Detalii Bug: Referinta, Reporter, Assignee */}
                     <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500">
                       <span className="flex items-center gap-1">
                         <i className="fa-solid fa-code-commit text-slate-400"></i>
@@ -331,25 +352,28 @@ const ProjectDetails = () => {
                         </span>
                       )}
                       {bug.resolved_commit && (
-                         <span className="flex items-center gap-1 text-green-600 font-semibold">
-                         <i className="fa-solid fa-check"></i>
-                         Fix: {bug.resolved_commit}
-                       </span>
+                          <span className="flex items-center gap-1 text-green-600 font-semibold">
+                          <i className="fa-solid fa-check"></i>
+                          Fix: {bug.resolved_commit}
+                        </span>
                       )}
                     </div>
                   </div>
-                  {/* ACTIUNI BUG (DOAR PM) si DOAR DACA NU E ARHIVAT */}
+                  
+                  {/* ACTIUNI BUG (Vizibile doar pentru PM si daca proiectul e activ) */}
                   {isPm && !isArchived && bug.status !== 'resolved' && bug.status !== 'closed' && (
                     <div className="flex flex-col gap-2 min-w-[140px]">
+                      {/* Buton Assign to Me */}
                       {!bug.assigned_to && (
                         <button onClick={() => handleAssignToMe(bug.id_bug)} className="text-xs font-bold text-slate-600 hover:bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 transition-all flex items-center justify-center gap-2">
                           <i className="fa-solid fa-hand-point-up"></i> Assign to Me
                         </button>
                       )}
+                      {/* Buton Mark Resolved - Doar daca e asignat userului curent */}
                       {bug.assigned_to === user.id_user && (
-                         <button onClick={() => openResolveModal(bug.id_bug)} className="text-xs font-bold text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg border border-green-200 transition-all flex items-center justify-center gap-2">
-                           <i className="fa-solid fa-check"></i> Mark Resolved
-                         </button>
+                          <button onClick={() => openResolveModal(bug.id_bug)} className="text-xs font-bold text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg border border-green-200 transition-all flex items-center justify-center gap-2">
+                            <i className="fa-solid fa-check"></i> Mark Resolved
+                          </button>
                       )}
                     </div>
                   )}
@@ -360,7 +384,7 @@ const ProjectDetails = () => {
         </div>
       )}
 
-      {/* MEMBERS SECTION (CU GESTIUNE PT PM) */}
+      {/* SECTIUNE LISTA MEMBRI */}
       {activeTab === 'members' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {members.map((m) => (
@@ -376,7 +400,7 @@ const ProjectDetails = () => {
                     <p className="text-xs text-slate-400">{m.user?.email}</p>
                   </div>
                 </div>
-                {/* AICI AM MODIFICAT: AFISAM DOAR PM SAU TST */}
+                {/* Badge Rol Membru */}
                 <span className={`px-2 py-1 rounded-lg text-[10px] font-bold tracking-wide uppercase ${
                     m.role === 'PM' ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700'
                 }`}>
@@ -385,6 +409,7 @@ const ProjectDetails = () => {
               </div>
 
               {/* BUTOANE ADMINISTRARE - VIZIBILE DOAR PENTRU PM (si daca nu e arhivat) */}
+              {/* PM-ul poate gestiona alti membri, dar nu pe sine insusi aici */}
               {isPm && !isArchived && m.id_user !== user.id_user && (
                 <div className="flex gap-2 pt-3 border-t border-slate-50">
                   
@@ -419,7 +444,7 @@ const ProjectDetails = () => {
         </div>
       )}
 
-      {/* MODAL REPORT BUG */}
+      {/*REPORT BUG */}
       {showBugForm && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-8 transform transition-all">
@@ -480,7 +505,7 @@ const ProjectDetails = () => {
         </div>
       )}
 
-      {/* MODAL RESOLVE BUG */}
+      {/* RESOLVE BUG */}
       {showResolveModal && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-8 transform transition-all">
